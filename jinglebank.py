@@ -3,11 +3,12 @@
 from gi.repository import Gtk, GObject
 import cairo, math
 
-class JingleButton(Gtk.Box):
+class JingleButton(Gtk.EventBox):
 
     #"""This Class describes a single jingle button"""
 
     def __init__(self, width, height, color, title, jingle):
+        Gtk.EventBox.__init__(self)
 
         self.width = width      # width of the jingle button
         self.height = height    # height of the jingle button
@@ -19,12 +20,10 @@ class JingleButton(Gtk.Box):
         self.drawarea = Gtk.DrawingArea()
         self.drawarea.set_size_request(self.width,self.height)
         self.drawarea.connect("draw", self.draw)
+        self.add(self.drawarea)
 
-        self.evbox = Gtk.EventBox()
-        self.evbox.add(self.drawarea)
-        self.evbox.connect("button-press-event", self.on_clicked, "Hallo")
-
-        self.add(self.evbox)
+        #Connect the EventBox to the click event
+        self.connect("button-press-event", self.on_clicked, "Hallo")
 
         #Only play the animation, when the button is pressed
         self.animation = False
@@ -35,7 +34,7 @@ class JingleButton(Gtk.Box):
 
     def draw(self, widget, cr):
 
-        cr.set_source_rgb(0.2, 0.7, 1)
+        cr.set_source_rgb(self.color[0], self.color[1], self.color[2])
         cr.rectangle(0,0,self.width,self.height)
         cr.fill_preserve()
 
