@@ -3,48 +3,35 @@
 from gi.repository import Gtk, GObject
 import cairo, math
 
-#class JingleButton(Gtk.DrawingArea):
+class JingleButton(Gtk.Box):
 
-class JingleBank(Gtk.Window):
+    #"""This Class describes a single jingle button"""
 
-    def __init__(self):
-        Gtk.Window.__init__(self, title="JingleBank")
+    def __init__(self, width, height, color, title, jingle):
 
-        self.grid = Gtk.Grid()
-        self.add(self.grid)
+        self.width = width      # width of the jingle button
+        self.height = height    # height of the jingle button
+        self.color = color      # color, list with rgb floats 0<=r,g,b<=1
+        self.title = title      # title to be displayed
+        self.jingle = jingle    # filename of the jingle to be player
 
-        self.width = 200
-        self.height = 100
-
-        self.button1 = Gtk.Button(label="Button1")
-        self.button2 = Gtk.Button(label="Button2")
-        self.button3 = Gtk.Button(label="Button3")
-        self.button4 = Gtk.Button(label="Button4")
-        self.button5 = Gtk.Button(label="Button5")
-        self.button6 = Gtk.Button(label="Button6")
-        self.button7 = Gtk.Button(label="Button7")
-
+        # The DrawingArea is used to display the title and animation
         self.drawarea = Gtk.DrawingArea()
         self.drawarea.set_size_request(self.width,self.height)
         self.drawarea.connect("draw", self.draw)
 
         self.evbox = Gtk.EventBox()
         self.evbox.add(self.drawarea)
-        self.evbox.connect("button-press-event", self.on_button_clicked, "Hallo")
+        self.evbox.connect("button-press-event", self.on_clicked, "Hallo")
 
-        self.grid.add(self.button1)
-        self.grid.attach(self.button2, 1, 3, 2, 1)
-        self.grid.attach_next_to(self.button3, self.button1, Gtk.PositionType.BOTTOM, 1, 2)
-        self.grid.attach_next_to(self.button4, self.button3, Gtk.PositionType.RIGHT, 2, 1)
-        self.grid.attach(self.button5, 1, 2, 1, 1)
-        self.grid.attach_next_to(self.button6, self.button5, Gtk.PositionType.RIGHT, 1, 1)
-        self.grid.add(self.button7)
-        self.grid.add(self.evbox)
+        self.add(self.evbox)
 
+        #Only play the animation, when the button is pressed
         self.animation = False
 
         #set radius depending on button size
         self.radius = math.sqrt((self.width/2)**2+(self.height/2)**2)
+
 
     def draw(self, widget, cr):
 
@@ -75,15 +62,48 @@ class JingleBank(Gtk.Window):
             self.percentage +=1
             return True
 
-    def on_button_clicked(self, widget, event, data):
+    def on_clicked(self, widget, event, data):
         print(data)
         self.percentage = 0
         GObject.timeout_add(50, self.animate)
         print("Works!")
 
+
+class JingleBank(Gtk.Window):
+
+    def __init__(self):
+        Gtk.Window.__init__(self, title="JingleBank")
+
+        self.grid = Gtk.Grid()
+        self.add(self.grid)
+
+        self.width = 200
+        self.height = 100
+
+        self.button1 = Gtk.Button(label="Button1")
+        self.button2 = Gtk.Button(label="Button2")
+        self.button3 = Gtk.Button(label="Button3")
+        self.button4 = Gtk.Button(label="Button4")
+        self.button5 = Gtk.Button(label="Button5")
+        self.button6 = Gtk.Button(label="Button6")
+        self.button7 = Gtk.Button(label="Button7")
+
+        self.jinglebutton = JingleButton(200, 100, [0.3,0.7,0.5], "Title", "Filename")
+
+        self.grid.add(self.button1)
+        self.grid.attach(self.button2, 1, 3, 2, 1)
+        self.grid.attach_next_to(self.button3, self.button1, Gtk.PositionType.BOTTOM, 1, 2)
+        self.grid.attach_next_to(self.button4, self.button3, Gtk.PositionType.RIGHT, 2, 1)
+        self.grid.attach(self.button5, 1, 2, 1, 1)
+        self.grid.attach_next_to(self.button6, self.button5, Gtk.PositionType.RIGHT, 1, 1)
+        self.grid.add(self.button7)
+        self.grid.add(self.jinglebutton)
+
+
 if __name__=="__main__":
 
     win = JingleBank()
     win.connect("delete-event", Gtk.main_quit)
+    win.connect("destroy", Gtk.main_quit)
     win.show_all()
     Gtk.main()
