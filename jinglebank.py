@@ -3,6 +3,12 @@
 from gi.repository import Gtk, GObject
 import cairo, math
 
+#Button size
+
+WIDTH = 200
+HEIGHT = 200
+
+
 class JingleButton(Gtk.EventBox):
 
     #"""This Class describes a single jingle button"""
@@ -41,13 +47,19 @@ class JingleButton(Gtk.EventBox):
         cr.set_source_rgb(0, 0, 0)
         cr.stroke()
 
+        #move origin to center of Drawingarea
+        cr.translate(self.width/2, self.height/2)
+
         cr.set_source_rgb(1,1,1)
         cr.select_font_face("Sans")
         cr.set_font_size(20)
+
+        #get extents of text to center it
+        self.extents = cr.text_extents(self.title)
+        cr.move_to(-self.extents[2]/2,-self.extents[3]/2)
         cr.show_text(self.title)
 
         if self.animation == True:
-            cr.translate(self.width/2, self.height/2)
             cr.rotate(-math.pi/2)
             cr.set_source_rgba(1,1,1,0.25)
             cr.move_to(0,0)
@@ -56,22 +68,27 @@ class JingleButton(Gtk.EventBox):
             cr.line_to(0,0)
             cr.fill()
 
-
     def animate(self):
-        self.animation = True
-        self.drawarea.queue_draw()
-        if self.percentage == 100:
-            self.animation = False
+        if self.animation == False:
             return False
         else:
-            self.percentage +=1
-            return True
+            if self.percentage == 100:
+                self.animation = False
+                return False
+            else:
+                self.drawarea.queue_draw()
+                self.percentage +=1
+                return True
 
     def on_clicked(self, widget, event, data):
-        print(data)
-        self.percentage = 0
-        GObject.timeout_add(50, self.animate)
-        print("Works!")
+        if self.animation == True:
+            self.percentage == 100
+            self.animation == False
+            self.drawarea.queue_draw()
+        else:
+            self.percentage = 0
+            self.animation = True
+            GObject.timeout_add(50, self.animate)
 
 
 class JingleBank(Gtk.Window):
@@ -104,7 +121,7 @@ class JingleBank(Gtk.Window):
 
 if __name__=="__main__":
 
-    win = JingleBank(200, 100)
+    win = JingleBank(WIDTH, HEIGHT)
     win.connect("delete-event", Gtk.main_quit)
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
