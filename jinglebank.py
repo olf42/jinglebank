@@ -79,15 +79,21 @@ class JingleBank(Gtk.Window):
         self.width = 200
         self.height = 100
 
-        self.button1 = Gtk.Button(label="Button1")
-        self.button2 = Gtk.Button(label="Button2")
-        self.button3 = Gtk.Button(label="Button3")
-        self.button4 = Gtk.Button(label="Button4")
-        self.button5 = Gtk.Button(label="Button5")
-        self.button6 = Gtk.Button(label="Button6")
-        self.button7 = Gtk.Button(label="Button7")
+        #self.button1 = Gtk.Button(label="Button1")
+        #self.button2 = Gtk.Button(label="Button2")
+        #self.button3 = Gtk.Button(label="Button3")
+        #self.button4 = Gtk.Button(label="Button4")
+        #self.button5 = Gtk.Button(label="Button5")
+        #self.button6 = Gtk.Button(label="Button6")
+        #self.button7 = Gtk.Button(label="Button7")
 
-        self.jinglebutton = JingleButton(200, 100, [0.3,0.7,0.5], "Title", "Filename")
+        self.button1 = JingleButton(200, 100, [0.3,0.7,0.9], "Track 1", "Filename")
+        self.button2 = JingleButton(200, 200, [0.4,0.6,0.4], "Track 2", "Filename")
+        self.button3 = JingleButton(200, 50, [0.5,0.5,0.3], "Track 3", "Filename")
+        self.button4 = JingleButton(100, 200, [0.6,0.4,0.2], "Track 4", "Filename")
+        self.button5 = JingleButton(200, 300, [0.7,0.3,0.4], "Track 5", "Filename")
+        self.button6 = JingleButton(50, 50, [0.8,0.2,0.3], "Track 6", "Filename")
+        self.button7 = JingleButton(100, 100, [0.9,0.1,0.8], "Track 7", "Filename")
 
         self.grid.add(self.button1)
         self.grid.attach(self.button2, 1, 3, 2, 1)
@@ -96,7 +102,6 @@ class JingleBank(Gtk.Window):
         self.grid.attach(self.button5, 1, 2, 1, 1)
         self.grid.attach_next_to(self.button6, self.button5, Gtk.PositionType.RIGHT, 1, 1)
         self.grid.add(self.button7)
-        self.grid.add(self.jinglebutton)
 
 
 if __name__=="__main__":
