@@ -10,6 +10,7 @@ import os.path
 WIDTH = 200
 HEIGHT = 200
 
+TESTFILE = os.path.join("testraffel", "hauptuhr.mp3")
 
 class JingleButton(Gtk.EventBox):
 
@@ -18,11 +19,12 @@ class JingleButton(Gtk.EventBox):
     def __init__(self, width, height, color, title, jingle):
         Gtk.EventBox.__init__(self)
 
+
         self.width = width      # width of the jingle button
         self.height = height    # height of the jingle button
         self.color = color      # color, list with rgb floats 0<=r,g,b<=1
         self.title = title      # title to be displayed
-        self.jingle = jingle    # filename of the jingle to be player
+        self.jingle = "file://" + os.path.join(os.path.dirname(os.path.abspath(__file__)), jingle)    # filename of the jingle to be player
 
         # The DrawingArea is used to display the title and animation
         self.drawarea = Gtk.DrawingArea()
@@ -39,6 +41,9 @@ class JingleButton(Gtk.EventBox):
         #set radius depending on button size
         self.radius = math.sqrt((self.width/2)**2+(self.height/2)**2)
 
+        #initialize the player
+        self.player = Gst.ElementFactory.make("playbin", "player")
+        self.player.set_property('uri', self.jingle)
 
     def draw(self, widget, cr):
 
@@ -90,6 +95,7 @@ class JingleButton(Gtk.EventBox):
         else:
             self.percentage = 0
             self.animation = True
+            self.player.set_state(Gst.State.PLAYING)
             GObject.timeout_add(50, self.animate)
 
 
@@ -98,20 +104,26 @@ class JingleBank(Gtk.Window):
     def __init__(self, width, height):
         Gtk.Window.__init__(self, title="JingleBank")
 
+        Gst.init()
+
+        #Grid to organize the Buttons
         self.grid = Gtk.Grid()
         self.add(self.grid)
 
+        #Set Button properties (will be replaced by configurable button dimensions)
         self.buttonwidth = width
         self.buttonheight = height
 
-        self.button1 = JingleButton(self.buttonwidth, self.buttonheight, [0.3,0.7,0.9], "Track 1", "Filename")
-        self.button2 = JingleButton(self.buttonwidth, self.buttonheight, [0.4,0.6,0.4], "Track 2", "Filename")
-        self.button3 = JingleButton(self.buttonwidth, self.buttonheight, [0.5,0.5,0.3], "Track 3", "Filename")
-        self.button4 = JingleButton(self.buttonwidth, self.buttonheight, [0.6,0.4,0.2], "Track 4", "Filename")
-        self.button5 = JingleButton(self.buttonwidth, self.buttonheight, [0.7,0.3,0.4], "Track 5", "Filename")
-        self.button6 = JingleButton(self.buttonwidth, self.buttonheight, [0.8,0.2,0.3], "Track 6", "Filename")
-        self.button7 = JingleButton(self.buttonwidth, self.buttonheight, [0.9,0.1,0.8], "Track 7", "Filename")
+        #create buttons (will be read from configfile in the future)
+        self.button1 = JingleButton(self.buttonwidth, self.buttonheight, [0.3,0.7,0.9], "Track 1", TESTFILE)
+        self.button2 = JingleButton(self.buttonwidth, self.buttonheight, [0.4,0.6,0.4], "Track 2", TESTFILE)
+        self.button3 = JingleButton(self.buttonwidth, self.buttonheight, [0.5,0.5,0.3], "Track 3", TESTFILE)
+        self.button4 = JingleButton(self.buttonwidth, self.buttonheight, [0.6,0.4,0.2], "Track 4", TESTFILE)
+        self.button5 = JingleButton(self.buttonwidth, self.buttonheight, [0.7,0.3,0.4], "Track 5", TESTFILE)
+        self.button6 = JingleButton(self.buttonwidth, self.buttonheight, [0.8,0.2,0.3], "Track 6", TESTFILE)
+        self.button7 = JingleButton(self.buttonwidth, self.buttonheight, [0.9,0.1,0.8], "Track 7", TESTFILE)
 
+        #testarray of buttons
         self.grid.attach(self.button1, 1, 1, 1, 1)
         self.grid.attach(self.button2, 1, 2, 1, 1)
         self.grid.attach(self.button3, 2, 1, 1, 1)
