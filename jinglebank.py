@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gst
 import cairo, math
+import colorsys
+import os.path
 
 #Button size
 
