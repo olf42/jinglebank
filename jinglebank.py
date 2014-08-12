@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from gi.repository import Gtk, GObject, Gst
-import cairo, math
+import cairo, math, time
 import colorsys
 import os.path
 
@@ -10,7 +10,7 @@ import os.path
 WIDTH = 200
 HEIGHT = 200
 
-TESTFILE = os.path.join("testraffel", "hauptuhr.mp3")
+TESTFILE = os.path.join("testraffel", "nebenuhr.mp3")
 
 class JingleButton(Gtk.EventBox):
 
@@ -36,7 +36,8 @@ class JingleButton(Gtk.EventBox):
         self.connect("button-press-event", self.on_clicked, "Hallo")
 
         #Only play the animation, when the button is pressed
-        self.animation = False
+        self.active = False
+        self.position = 0
 
         #set radius depending on button size
         self.radius = math.sqrt((self.width/2)**2+(self.height/2)**2)
@@ -44,6 +45,8 @@ class JingleButton(Gtk.EventBox):
         #initialize the player
         self.player = Gst.ElementFactory.make("playbin", "player")
         self.player.set_property('uri', self.jingle)
+        self.player.connect("about_to_finish", self.on_finished)
+        bus = self.player.get_bus()
 
     def draw(self, widget, cr):
 
@@ -66,7 +69,7 @@ class JingleButton(Gtk.EventBox):
         cr.move_to(-self.extents[2]/2,-self.extents[3]/2)
         cr.show_text(self.title)
 
-        if self.animation == True:
+        if self.active == True:
             cr.rotate(-math.pi/2)
             cr.set_source_rgba(1,1,1,0.25)
             cr.move_to(0,0)
@@ -76,27 +79,51 @@ class JingleButton(Gtk.EventBox):
             cr.fill()
 
     def animate(self):
-        if self.animation == False:
+        if self.active == False:
             return False
         else:
-            if self.percentage == 100:
-                self.animation = False
+            if self.percentage > 99:
+                self.player.set_state(Gst.State.NULL)
                 return False
             else:
+                self.duration = self.player.query_duration(Gst.Format.TIME)[1]
+                self.position = self.player.query_position(Gst.Format.TIME)[1]
+                if self.duration != 0:
+                  self.percentage = (self.position / self.duration) * 100
                 self.drawarea.queue_draw()
-                self.percentage +=1
                 return True
 
+    # called when the button is clicked
     def on_clicked(self, widget, event, data):
-        if self.animation == True:
-            self.percentage == 100
-            self.animation == False
-            self.drawarea.queue_draw()
+        self.player.set_state(Gst.State.NULL)
+        print(self.active, self.position, self.player.get_state(1))
+        if self.active == True:
+            self.on_finished(None)
         else:
+            self.active = True
             self.percentage = 0
-            self.animation = True
             self.player.set_state(Gst.State.PLAYING)
-            GObject.timeout_add(50, self.animate)
+            self.id = GObject.timeout_add(50, self.animate)
+
+    # called by about-to-finish-event of player
+    def on_finished(self, player):
+        time.sleep(1)
+        GObject.source_remove(self.id)
+        self.active = False
+        self.percentage = 0
+        self.drawarea.queue_draw()
+
+    # called when a message occurs on the bus
+    def on_message(self, bus, message):
+        t = message.type
+        if t == Gst.Message.EOS:
+            self.player.set_state(Gst.State.NULL)
+            self.active = False
+        elif t == Gst.Message.Error:
+            self.player.set_state(Gst.State.NULL)
+            err, debug = message.parse_error()
+            print("Error: %s" % err, debug)
+            self.active = False
 
 
 class JingleBank(Gtk.Window):
