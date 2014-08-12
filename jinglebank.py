@@ -10,7 +10,7 @@ import os.path
 WIDTH = 200
 HEIGHT = 200
 
-TESTFILE = os.path.join("testraffel", "nebenuhr.mp3")
+TESTFILE = os.path.join("testraffel", "hauptuhr.mp3")
 
 class JingleButton(Gtk.EventBox):
 
@@ -84,6 +84,7 @@ class JingleButton(Gtk.EventBox):
         else:
             if self.percentage > 99:
                 self.player.set_state(Gst.State.NULL)
+                self.active = False
                 return False
             else:
                 self.duration = self.player.query_duration(Gst.Format.TIME)[1]
@@ -95,23 +96,32 @@ class JingleButton(Gtk.EventBox):
 
     # called when the button is clicked
     def on_clicked(self, widget, event, data):
-        self.player.set_state(Gst.State.NULL)
-        print(self.active, self.position, self.player.get_state(1))
-        if self.active == True:
-            self.on_finished(None)
+        if self.active == False:
+            self.player.set_state(Gst.State.NULL)
+            self.activate()
         else:
-            self.active = True
-            self.percentage = 0
-            self.player.set_state(Gst.State.PLAYING)
-            self.id = GObject.timeout_add(50, self.animate)
+            self.deactivate()
+            self.player.set_state(Gst.State.NULL)
+
+    def activate(self):
+        self.active = True
+        self.percentage = 0
+        self.player.set_state(Gst.State.PLAYING)
+        self.id = GObject.timeout_add(50, self.animate)
+
+    def deactivate(self):
+        GObject.source_remove(self.id)
+        self.active = False
+        self.drawarea.queue_draw()
 
     # called by about-to-finish-event of player
     def on_finished(self, player):
+        # time.sleep(1) is needed, since about-to-finish is triggered while
+        # file is still playing. Short Samples would then display
+        # no animation at all, and program is likely to crash :(
         time.sleep(1)
-        GObject.source_remove(self.id)
-        self.active = False
-        self.percentage = 0
-        self.drawarea.queue_draw()
+        self.deactivate()
+
 
     # called when a message occurs on the bus
     def on_message(self, bus, message):
