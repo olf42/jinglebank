@@ -37,7 +37,6 @@ class JingleButton(Gtk.EventBox):
 
         #Only play the animation, when the button is pressed
         self.active = False
-        self.position = 0
 
         #set radius depending on button size
         self.radius = math.sqrt((self.width/2)**2+(self.height/2)**2)
@@ -45,8 +44,8 @@ class JingleButton(Gtk.EventBox):
         #initialize the player
         self.player = Gst.ElementFactory.make("playbin", "player")
         self.player.set_property('uri', self.jingle)
-        self.player.connect("about_to_finish", self.on_finished)
-        bus = self.player.get_bus()
+        #self.player.connect("about_to_finish", self.on_finished)
+        #bus = self.player.get_bus()
 
     def draw(self, widget, cr):
 
@@ -83,25 +82,23 @@ class JingleButton(Gtk.EventBox):
             return False
         else:
             if self.percentage > 99:
-                self.player.set_state(Gst.State.NULL)
-                self.active = False
+                self.deactivate()
                 return False
             else:
-                self.duration = self.player.query_duration(Gst.Format.TIME)[1]
-                self.position = self.player.query_position(Gst.Format.TIME)[1]
-                if self.duration != 0:
-                  self.percentage = (self.position / self.duration) * 100
+                duration = self.player.query_duration(Gst.Format.TIME)
+                position = self.player.query_position(Gst.Format.TIME)
+                if duration[0] and position[0]:
+                    self.percentage = (position[2] / duration[2]) * 100
                 self.drawarea.queue_draw()
                 return True
 
     # called when the button is clicked
     def on_clicked(self, widget, event, data):
-        if self.active == False:
-            self.player.set_state(Gst.State.NULL)
+        if not self.active:
+            #self.player.set_state(Gst.State.NULL)
             self.activate()
         else:
             self.deactivate()
-            self.player.set_state(Gst.State.NULL)
 
     def activate(self):
         self.active = True
@@ -113,6 +110,7 @@ class JingleButton(Gtk.EventBox):
         GObject.source_remove(self.id)
         self.active = False
         self.drawarea.queue_draw()
+        self.player.set_state(Gst.State.NULL)
 
     # called by about-to-finish-event of player
     def on_finished(self, player):
@@ -169,6 +167,9 @@ class JingleBank(Gtk.Window):
         self.grid.attach(self.button6, 3, 2, 1, 1)
         self.grid.attach(self.button7, 3, 3, 1, 1)
 
+
+    def read_config(self, filename):
+        pass
 
 if __name__=="__main__":
 
