@@ -81,7 +81,7 @@ class JingleButton(Gtk.EventBox):
                 duration = self.player.query_duration(Gst.Format.TIME) 
                 position = self.player.query_position(Gst.Format.TIME) 
                 if duration[0] and position[0]: 
-                    self.percentage = (position[2] / duration[2]) * 100 
+                    self.percentage = (position[1] / duration[1]) * 100 
                 self.drawarea.queue_draw() 
                 return True 
  
