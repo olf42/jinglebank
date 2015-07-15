@@ -1,0 +1,170 @@
+{
+  "Jingles": [
+    {
+      "Filename": "testraffel/Jingles/Diskordianischer_Sender.wav",
+      "YPosition": 1,
+      "XPosition": 1,
+      "ButtonColor": [
+        0,
+        0.7,
+        0
+      ],
+      "ButtonName": "Diskordianischer Sender"
+    },
+    {
+      "Filename": "",
+      "YPosition": 1,
+      "XPosition": 2,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle2"
+    },
+    {
+      "Filename": "",
+      "YPosition": 1,
+      "XPosition": 3,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle3"
+    },
+    {
+      "Filename": "",
+      "YPosition": 2,
+      "XPosition": 1,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle5"
+    },
+    {
+      "Filename": "",
+      "YPosition": 2,
+      "XPosition": 2,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle6"
+    },
+    {
+      "Filename": "",
+      "YPosition": 2,
+      "XPosition": 3,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle7"
+    },
+    {
+      "Filename": "",
+      "YPosition": 2,
+      "XPosition": 4,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle8"
+    },
+    {
+      "Filename": "",
+      "YPosition": 3,
+      "XPosition": 1,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle9"
+    },
+    {
+      "Filename": "",
+      "YPosition": 3,
+      "XPosition": 2,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle10"
+    },
+    {
+      "Filename": "",
+      "YPosition": 3,
+      "XPosition": 3,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle11"
+    },
+    {
+      "Filename": "",
+      "YPosition": 3,
+      "XPosition": 4,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle12"
+    },
+    {
+      "Filename": "",
+      "YPosition": 4,
+      "XPosition": 1,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle13"
+    },
+    {
+      "Filename": "",
+      "YPosition": 4,
+      "XPosition": 2,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle14"
+    },
+    {
+      "Filename": "",
+      "YPosition": 4,
+      "XPosition": 3,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle15"
+    },
+    {
+      "Filename": "",
+      "YPosition": 4,
+      "XPosition": 4,
+      "ButtonColor": [
+        0,
+        0,
+        0
+      ],
+      "ButtonName": "Jingle16"
+    }
+  ],
+  "Project": "testraffel"
+}
